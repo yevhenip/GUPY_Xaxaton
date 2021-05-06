@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -12,8 +9,19 @@ namespace Gupy.Api
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        private IConfiguration Configuration { get; }
+        private IWebHostEnvironment Environment { get; }
+
+        protected Startup(IWebHostEnvironment environment)
+        {
+            Environment = environment;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Environment.ContentRootPath)
+                .AddJsonFile("/appsettings.json", true, true);
+            builder.AddEnvironmentVariables();
+
+            Configuration = builder.Build();
+        }
         public void ConfigureServices(IServiceCollection services)
         {
         }
