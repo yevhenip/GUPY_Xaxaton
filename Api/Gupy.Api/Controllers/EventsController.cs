@@ -44,7 +44,7 @@ namespace Gupy.Api.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id:int}")]
         async Task<IActionResult> DeleteAsync(int id)
         {
             if (id < 0 )
