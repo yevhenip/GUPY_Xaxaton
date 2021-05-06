@@ -1,4 +1,6 @@
-﻿namespace Gupy.Api.Entities
+﻿using System;
+
+namespace Gupy.Api.Entities
 {
     public class Event
     {
@@ -9,5 +11,8 @@
         public string Description { get; set; }
         public int SubscribedCount { get; set; }
         public int MinWantedPeople { get; set; }
+        public DateTime EventTime { get; set; }
+        public double Duration { get; set; }
+        public string City { get; set; }
     }
 }

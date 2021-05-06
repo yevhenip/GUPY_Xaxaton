@@ -1,9 +1,12 @@
+using System.Data;
+using Gupy.Api.Interfaces.Repositories;
+using Gupy.Api.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MySql.Data.MySqlClient;
 
 namespace Gupy.Api
 {
@@ -24,9 +27,10 @@ namespace Gupy.Api
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IDbConnection>(_ => new MySqlConnection(Configuration["Data:ConnectionString"]));
+            services.AddSingleton<IEventRepository, EventRepository>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -38,10 +42,7 @@ namespace Gupy.Api
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapControllers();
             });
         }
     }
