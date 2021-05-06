@@ -116,5 +116,11 @@ namespace Gupy.Api.Concrete.Repositories
                 new {EventId = eventId, UserId = userId});
             return true;
         }
+
+        public  Task<List<Event>> GetMyAsync()
+        {
+            using var connection = _dbConnection.CreateConnection();
+            var events = connection.QueryAsync<Event>()
+        }
     }
 }
