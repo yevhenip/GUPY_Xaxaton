@@ -26,7 +26,7 @@ namespace Gupy.Api.Controllers
         public async Task<IActionResult> IsExistsAsync(int id)
         {
             var result = await _userRepository.IsExists(id);
-            return Ok(result);
+            return result ? Ok() : NotFound();
         }
 
         [HttpGet("{id:int}")]

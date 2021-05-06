@@ -60,5 +60,12 @@ namespace Gupy.Api.Controllers
             await _eventRepository.DeleteAsync(id);
             return Ok();
         }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateEventAfterSubscription(int id)
+        {
+            await _eventRepository.UpdateSubscribersCountAsync(id);
+            return Ok();
+        }
     }
 }

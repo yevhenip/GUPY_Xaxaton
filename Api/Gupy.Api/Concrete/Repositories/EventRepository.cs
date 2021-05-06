@@ -81,5 +81,15 @@ namespace Gupy.Api.Concrete.Repositories
             return connection.QueryAsync<Event>("select * from events limit 3 offset @Page",
                 new {Page = (page - 1) * 3});
         }
+        
+        
+        public async Task UpdateSubscribersCountAsync(int id)
+        {
+            using var connection = _dbConnection.CreateConnection();
+            var count =
+                await connection.QuerySingleOrDefaultAsync<int>("select SubscribedCount from events where Id = @Id", new {Id = id});
+            await connection.ExecuteAsync(
+                "update events set SubscribedCount = @Count where Id = @Id", new {Count = count + 1, Id = id});
+        }
     }
 }
