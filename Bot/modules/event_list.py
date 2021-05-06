@@ -58,10 +58,15 @@ async def list_events(msg: Message,
     await show_page(1, msg)
 
 
-async def handle_event_subscription(callback: CallbackQuery):
-    # call api and add person to event
-    await callback.answer(text="Тебе було додано до івенту! Перевір особистий кабінет (/myevents)",
-                          show_alert=True)
+@inject
+async def handle_event_subscription(callback: CallbackQuery,
+                                    event_service: EventsService = Provide[DiContainer.events_service]):
+    result = await event_service.subscribe_to_event(callback.data, callback.from_user.id)
+    if result:
+        await callback.answer(text="Тебе було додано до івенту! Перевір особистий кабінет (/myevents)",
+                              show_alert=True)
+    else:
+        await callback.answer(text="Щось пішло не так. Мабуть ти вже підписаний на цей івент!")
 
 
 async def next_page(msg: Message, state: FSMContext):
@@ -86,8 +91,34 @@ async def prev_page(msg: Message, state: FSMContext):
     await show_page(new_page, msg)
 
 
+@inject
+async def my_events(msg: Message, event_service: EventsService = Provide[DiContainer.events_service]):
+    events = await event_service.get_user_events(msg.from_user.id)
+    
+    for event in events:
+        event_type = "Онлайн" if event.type == 0 else "Оффлайн"
+
+        reactions = [
+            InlineKeyboardButton(text=f"👍 Піду!", callback_data=f"{event.id}")
+        ]
+
+        markup = InlineKeyboardMarkup()
+        markup.add(*reactions)
+
+        await msg.answer(
+            f"📎 Назва: <b>{event.name}</b>\n\n"
+            f"📅 Дата проведення: <i>{event.event_time}</i>\n"
+            f"⌚ Тривалість: <i>{event.duration}</i> год.\n"
+            f"⭕ Тип: {event_type}\n"
+            f"🧍 Людей підуть: {event.subscribed_count}\n\n"
+            f"📜 Опис:\n<code>{event.description}</code>",
+            reply_markup=markup,
+            parse_mode=ParseMode.HTML)
+
+
 def register_event_list_module(dispatcher: Dispatcher):
     dispatcher.register_message_handler(list_events, commands=["events"], state="*")
+    dispatcher.register_message_handler(my_events, commands=["myevents"], state="*")
     dispatcher.register_message_handler(next_page, commands=["next"], state=EventListStates.scrolling)
     dispatcher.register_message_handler(prev_page, commands=["previous"], state=EventListStates.scrolling)
     dispatcher.register_callback_query_handler(handle_event_subscription, state=EventListStates.scrolling)

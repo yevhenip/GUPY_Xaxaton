@@ -1,2 +1,2 @@
-BOT_TOKEN = ""
+BOT_TOKEN = "1757311592:AAHtjr503c86NQV8Qt7BBLaqE-Pt00clNEg"
 API_URL = "https://localhost:5001/api/v1"
