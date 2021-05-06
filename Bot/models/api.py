@@ -12,3 +12,13 @@ class Event:
     subscribed_count: int
     event_time: str
     duration: float
+
+
+@dataclass_json(letter_case=LetterCase.CAMEL)
+@dataclass
+class User:
+    id: int
+    telegram_id: int
+    name: str
+    user_name: str
+    phone: str

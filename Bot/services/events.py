@@ -10,5 +10,5 @@ class EventsService:
         self._session = aiohttp.ClientSession(connector=connector)
 
     async def get_events(self, page=1) -> List[Event]:
-        async with self._session.get(f"{API_URL}/events?page={page}") as resp:
+        async with self._session.get(f"{API_URL}/events/page/{page}") as resp:
             return [Event.from_dict(event) for event in await resp.json()]

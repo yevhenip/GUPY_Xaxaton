@@ -1,10 +1,22 @@
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove, ParseMode
+from dependency_injector.wiring import Provide, inject
+
+from container import DiContainer
+from models.api import User
+from services.users import UsersService
 
 
-async def start(msg: Message, state: FSMContext):
+@inject
+async def start(msg: Message, state: FSMContext, users_service: UsersService = Provide[DiContainer.events_service]):
     await state.finish()
+
+    if not users_service.user_is_registered(msg.from_user.id):
+        tg_user = msg.from_user
+        user = User(telegram_id=tg_user.id, name=tg_user.full_name, user_name=tg_user.username)
+        await users_service.register_user(user)
+
     await msg.answer("Привіт! Радий тебе бачити у GUPY.Events! Тут ти можеш організувати або продивитись активні "
                      "івенти. Для початку, обери що ти хочеш: організувати або продивитись активні. Тут все анонімно, "
                      "не переймайся, ти тут як свій)")
