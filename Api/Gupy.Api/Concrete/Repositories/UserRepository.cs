@@ -50,7 +50,7 @@ namespace Gupy.Api.Concrete.Repositories
         {
             using var connection = _dbConnection.CreateConnection();
             connection.ExecuteAsync(
-                "delete from users where TelegramId = telegramId");
+                "delete from users where TelegramId = @TelegramId", new{TelegramId = telegramId});
                
             return Task.CompletedTask;
         }

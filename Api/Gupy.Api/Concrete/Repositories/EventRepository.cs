@@ -44,7 +44,7 @@ namespace Gupy.Api.Concrete.Repositories
         {
             using var connection = _dbConnection.CreateConnection();
             connection.ExecuteAsync(
-                "delete from events where Id = id");
+                "delete from events where Id = @Id", new {Id = id});
                
             return Task.CompletedTask;
         }
