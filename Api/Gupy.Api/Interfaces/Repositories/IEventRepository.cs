@@ -10,5 +10,6 @@ namespace Gupy.Api.Interfaces.Repositories
         Task<Event> GetAsync(int id);
         Task CreateAsync(Event @event);
         Task DeleteAsync(int id);
+        Task<IEnumerable<Event>> GetPageAsync(int page);
     }
 }
