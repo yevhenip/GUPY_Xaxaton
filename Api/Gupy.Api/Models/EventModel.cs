@@ -1,4 +1,3 @@
-using System;
 using Gupy.Api.Entities;
 
 namespace Gupy.Api.Models

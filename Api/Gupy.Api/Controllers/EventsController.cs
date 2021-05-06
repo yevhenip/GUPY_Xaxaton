@@ -61,11 +61,11 @@ namespace Gupy.Api.Controllers
             return Ok();
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateEventAfterSubscription(int id)
+        [HttpPut("{eventId:int}/{userId:int}")]
+        public async Task<IActionResult> UpdateEventAfterSubscription(int eventId, int userId)
         {
-            await _eventRepository.UpdateSubscribersCountAsync(id);
-            return Ok();
+            var result = await _eventRepository.UpdateSubscribersCountAsync(eventId, userId);
+            return result ? Ok() : BadRequest();
         }
     }
 }
