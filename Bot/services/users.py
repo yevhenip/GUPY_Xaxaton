@@ -9,7 +9,7 @@ class UsersService:
         self._session = aiohttp.ClientSession(connector=connector)
 
     async def register_user(self, user: User) -> bool:
-        async with self._session.post(f"{API_URL}/users", data=user.to_json()) as resp:
+        async with self._session.post(f"{API_URL}/users", json=user.to_dict()) as resp:
             return resp.status == 201
 
     async def user_is_registered(self, user_telegram_id: int) -> bool:

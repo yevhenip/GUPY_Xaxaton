@@ -9,12 +9,12 @@ from services.users import UsersService
 
 
 @inject
-async def start(msg: Message, state: FSMContext, users_service: UsersService = Provide[DiContainer.events_service]):
+async def start(msg: Message, state: FSMContext, users_service: UsersService = Provide[DiContainer.users_service]):
     await state.finish()
 
-    if not users_service.user_is_registered(msg.from_user.id):
+    if not await users_service.user_is_registered(msg.from_user.id):
         tg_user = msg.from_user
-        user = User(telegram_id=tg_user.id, name=tg_user.full_name, user_name=tg_user.username)
+        user = User(id=0, telegram_id=tg_user.id, name=tg_user.full_name, user_name=tg_user.username, phone="")
         await users_service.register_user(user)
 
     await msg.answer("Привіт! Радий тебе бачити у GUPY.Events! Тут ти можеш організувати або продивитись активні "

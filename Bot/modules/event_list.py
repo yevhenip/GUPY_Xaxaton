@@ -24,15 +24,9 @@ def get_navigation_keyboard():
 
 
 @inject
-async def list_events(msg: Message,
-                      state: FSMContext,
-                      event_service: EventsService = Provide[DiContainer.events_service]):
-    await EventListStates.scrolling.set()
+async def show_page(page_number: int, msg: Message, event_service: EventsService = Provide[DiContainer.events_service]):
+    events = await event_service.get_events(page_number)
 
-    keyboard = get_navigation_keyboard()
-    await msg.answer("Показую івенти:", reply_markup=keyboard)
-
-    events = await event_service.get_events()
     for event in events:
         event_type = "Онлайн" if event.type == 0 else "Оффлайн"
 
@@ -54,12 +48,46 @@ async def list_events(msg: Message,
             parse_mode=ParseMode.HTML)
 
 
+async def list_events(msg: Message,
+                      state: FSMContext):
+    await EventListStates.scrolling.set()
+    await state.update_data(currentPage=1)
+
+    keyboard = get_navigation_keyboard()
+    await msg.answer("Показую івенти:", reply_markup=keyboard)
+    await show_page(1, msg)
+
+
 async def handle_event_subscription(callback: CallbackQuery):
     # call api and add person to event
     await callback.answer(text="Тебе було додано до івенту! Перевір особистий кабінет (/myevents)",
                           show_alert=True)
 
 
+async def next_page(msg: Message, state: FSMContext):
+    user_data = await state.get_data()
+
+    new_page = user_data["currentPage"] + 1
+    await state.update_data(currentPage=new_page)
+
+    await show_page(new_page, msg)
+
+
+async def prev_page(msg: Message, state: FSMContext):
+    user_data = await state.get_data()
+
+    if user_data["currentPage"] == 1:
+        await msg.answer("Ти на першій сторінці ☺️")
+        return
+
+    new_page = user_data["currentPage"] - 1
+    await state.update_data(currentPage=new_page)
+
+    await show_page(new_page, msg)
+
+
 def register_event_list_module(dispatcher: Dispatcher):
     dispatcher.register_message_handler(list_events, commands=["events"], state="*")
+    dispatcher.register_message_handler(next_page, commands=["next"], state=EventListStates.scrolling)
+    dispatcher.register_message_handler(prev_page, commands=["previous"], state=EventListStates.scrolling)
     dispatcher.register_callback_query_handler(handle_event_subscription, state=EventListStates.scrolling)
