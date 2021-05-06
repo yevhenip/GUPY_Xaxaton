@@ -9,4 +9,9 @@
     <PackageReference Include="MySql.Data" Version="8.0.24" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Concrete\Services" />
+    <Folder Include="Interfaces\Services" />
+  </ItemGroup>
+
 </Project>
