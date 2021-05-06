@@ -1,14 +1,20 @@
 import asyncio
 import logging
 
+import modules
+
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from config import BOT_TOKEN
+from container import DiContainer
 from modules.greet import register_greet_module
 
 
 async def main():
+    container = DiContainer()
+    container.wire(packages=[modules])
+
     bot = Bot(token=BOT_TOKEN)
     logging.basicConfig(level=logging.INFO)
 

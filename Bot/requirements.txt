@@ -1,1 +1,2 @@
 aiogram
+dependency-injector
