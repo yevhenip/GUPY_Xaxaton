@@ -75,11 +75,25 @@ namespace Gupy.Api.Concrete.Repositories
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<Event>> GetPageAsync(int page)
+        public async Task<IEnumerable<EventModel>> GetPageAsync(int page)
         {
             using var connection = _dbConnection.CreateConnection();
-            return connection.QueryAsync<Event>("select * from events limit 3 offset @Page",
-                new {Page = (page - 1) * 3});
+            var events = (await connection.QueryAsync<Event>("select * from events limit 3 offset @Page",
+                new {Page = (page - 1) * 3})).ToList();
+            var result = events.Select(@event => new EventModel
+                {
+                    Id = @event.Id,
+                    Description = @event.Description,
+                    Name = @event.Name,
+                    Duration = @event.Duration,
+                    Type = @event.Type,
+                    EventTime = @event.EventTime.ToString("f"),
+                    SubscribedCount = @event.SubscribedCount,
+                    MinWantedPeople = @event.MinWantedPeople
+                })
+                .ToList();
+
+            return result;
         }
         
         
