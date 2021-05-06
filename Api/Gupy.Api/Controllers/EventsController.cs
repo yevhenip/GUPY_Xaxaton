@@ -64,18 +64,7 @@ namespace Gupy.Api.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateEventAfterSubscription(int id)
         {
-            if (id < 0 )
-            {
-                return BadRequest("Id for model cannot be negative!");
-            }
-
-            var result = await _eventRepository.GetAsync(id);
-            if (result == null)
-            {
-                return BadRequest("There is model with such an id!");
-            }
-            
-            await _eventRepository.UpdateSubscribersCountAsync(id, result.SubscribedCount + 1);
+            await _eventRepository.UpdateSubscribersCountAsync(id);
             return Ok();
         }
     }

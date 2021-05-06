@@ -83,13 +83,13 @@ namespace Gupy.Api.Concrete.Repositories
         }
         
         
-        public Task UpdateSubscribersCountAsync(int id, int newCount)
+        public async Task UpdateSubscribersCountAsync(int id)
         {
             using var connection = _dbConnection.CreateConnection();
-            connection.ExecuteAsync(
-                "update events set SubscribedCount = @NewCount where Id = @Id", new {newCount, id});
-               
-            return Task.CompletedTask;
+            var count =
+                await connection.QuerySingleOrDefaultAsync<int>("select SubscribedCount from events where Id = @Id", new {Id = id});
+            await connection.ExecuteAsync(
+                "update events set SubscribedCount = @Count where Id = @Id", new {Count = count + 1, Id = id});
         }
     }
 }
