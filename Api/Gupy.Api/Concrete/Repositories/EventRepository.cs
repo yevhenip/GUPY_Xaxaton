@@ -121,7 +121,7 @@ namespace Gupy.Api.Concrete.Repositories
         {
             using var connection = _dbConnection.CreateConnection();
             var events = await connection.QueryAsync<Event>(
-                "select e.* from events e join userEvents ue on e.Id = ue.EventId join users u on u.Id = ue.UserId where u.Id = @UserId",
+                "select e.* from events e join userEvents ue on e.Id = ue.EventId join users u on u.Id = ue.UserId where u.TelegramId = @UserId",
                 new {UserId = userId});
             
             var result = events.Select(@event => new EventModel
