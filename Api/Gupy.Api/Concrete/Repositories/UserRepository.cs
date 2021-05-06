@@ -40,9 +40,13 @@ namespace Gupy.Api.Concrete.Repositories
             return Task.CompletedTask;
         }
 
-        public Task DeleteAsync(int id)
+        public Task DeleteAsync(int telegramId)
         {
-            throw new System.NotImplementedException();
+            using var connection = _dbConnection.CreateConnection();
+            connection.ExecuteAsync(
+                "delete from users where TelegramId = telegramId");
+               
+            return Task.CompletedTask;
         }
     }
 }

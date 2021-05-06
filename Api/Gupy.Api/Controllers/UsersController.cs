@@ -35,5 +35,22 @@ namespace Gupy.Api.Controllers
             await _userRepository.CreateAsync(user);
             return Ok();
         }
+
+        [HttpDelete("{telegramId:int}")]
+        public async Task<IActionResult> DeleteAsync(int telegramId)
+        {
+            if (telegramId < 0 )
+            {
+                return BadRequest("Id for model cannot be negative!");
+            }
+            
+            if (_userRepository.GetAsync(telegramId) == null)
+            {
+                return BadRequest("There is model with such an id!");
+            }
+            
+            await _userRepository.DeleteAsync(telegramId);
+            return Ok();
+        }
     }
 }
