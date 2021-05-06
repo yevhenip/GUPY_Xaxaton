@@ -30,10 +30,10 @@ namespace Gupy.Api.Controllers
             return Ok(result);
         }
         
-        [HttpGet("my")]
-        public async Task<IActionResult> GetMyAsync()
+        [HttpGet("my/{userId:int}")]
+        public async Task<IActionResult> GetMyAsync(int userId)
         {
-            var result = await _eventRepository.GetMyAsync();
+            var result = await _eventRepository.GetMyAsync(userId);
             return Ok(result);
         }
         

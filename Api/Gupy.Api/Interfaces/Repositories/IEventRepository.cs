@@ -13,6 +13,6 @@ namespace Gupy.Api.Interfaces.Repositories
         Task DeleteAsync(int id);
         Task<IEnumerable<EventModel>> GetPageAsync(int page);
         public Task<bool> UpdateSubscribersCountAsync(int eventId, int userId);
-        Task<List<Event>> GetMyAsync();
+        Task<List<EventModel>> GetMyAsync(int userId);
     }
 }

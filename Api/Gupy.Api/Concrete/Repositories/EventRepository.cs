@@ -117,10 +117,27 @@ namespace Gupy.Api.Concrete.Repositories
             return true;
         }
 
-        public  Task<List<Event>> GetMyAsync()
+        public async Task<List<EventModel>> GetMyAsync(int userId)
         {
             using var connection = _dbConnection.CreateConnection();
-            var events = connection.QueryAsync<Event>()
+            var events = await connection.QueryAsync<Event>(
+                "select e.* from events e join userEvents ue on e.Id = ue.EventId join users u on u.Id = ue.UserId where u.Id = @UserId",
+                new {UserId = userId});
+            
+            var result = events.Select(@event => new EventModel
+                {
+                    Id = @event.Id,
+                    Description = @event.Description,
+                    Name = @event.Name,
+                    Duration = @event.Duration,
+                    Type = @event.Type,
+                    EventTime = @event.EventTime.ToString("f"),
+                    SubscribedCount = @event.SubscribedCount,
+                    MinWantedPeople = @event.MinWantedPeople
+                })
+                .ToList();
+
+            return result;
         }
     }
 }
