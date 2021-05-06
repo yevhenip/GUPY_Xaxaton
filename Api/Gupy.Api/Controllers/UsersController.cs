@@ -21,6 +21,13 @@ namespace Gupy.Api.Controllers
             var result = await _userRepository.GetAllAsync();
             return Ok(result);
         }
+        
+        [HttpPost("{id:int}")]
+        public async Task<IActionResult> IsExistsAsync(int id)
+        {
+            var result = await _userRepository.IsExists(id);
+            return Ok(result);
+        }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAsync(int id)

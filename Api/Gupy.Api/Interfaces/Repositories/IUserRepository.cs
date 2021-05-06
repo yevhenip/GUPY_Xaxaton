@@ -8,6 +8,7 @@ namespace Gupy.Api.Interfaces.Repositories
     {
         Task<IEnumerable<User>> GetAllAsync();
         Task<User> GetAsync(int id);
+        Task<bool> IsExists(int id);
         Task CreateAsync(User user);
         Task DeleteAsync(int id);
     }
