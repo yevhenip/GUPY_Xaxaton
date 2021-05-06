@@ -1,34 +1,44 @@
 ﻿using System.Collections.Generic;
-using System.Data;
 using System.Threading.Tasks;
 using Dapper;
 using Gupy.Api.Entities;
+using Gupy.Api.Interfaces;
 using Gupy.Api.Interfaces.Repositories;
 
-namespace Gupy.Api.Repository
+namespace Gupy.Api.Concrete.Repositories
 {
     public class EventRepository : IEventRepository
     {
-        private readonly IDbConnection _dbConnection;
+        private readonly IDbConnectionFactory _dbConnection;
 
-        public EventRepository(IDbConnection dbConnection)
+        public EventRepository(IDbConnectionFactory dbConnectionFactory)
         {
-            _dbConnection = dbConnection;
+            _dbConnection = dbConnectionFactory;
         }
 
         public Task<IEnumerable<Event>> GetAllAsync()
         {
-            return _dbConnection.QueryAsync<Event>("select * from events");
+            using var connection = _dbConnection.CreateConnection();
+            return connection.QueryAsync<Event>("select * from events");
         }
 
         public Task<Event> GetAsync(int id)
         {
-            return _dbConnection.QuerySingleOrDefaultAsync<Event>("select * from events where id = @id", new {Id = id});
+            using var connection = _dbConnection.CreateConnection();
+            return connection.QuerySingleOrDefaultAsync<Event>("select * from events where Id = @Id", new {Id = id});
         }
 
         public Task CreateAsync(Event @event)
         {
-            throw new System.NotImplementedException();
+            using var connection = _dbConnection.CreateConnection();
+            connection.ExecuteAsync(
+                "insert into events(Name, Description, SubscribedCount, MinWantedPeople, Category, Type) values(@Name, @Description, @SubscribedCount, @MinWantedPeople, @Category, @Type)",
+                new
+                {
+                    @event.Name, @event.Description, @event.SubscribedCount, @event.MinWantedPeople, @event.Category,
+                    @event.Type
+                });
+            return Task.CompletedTask;
         }
 
         public Task DeleteAsync(int id)

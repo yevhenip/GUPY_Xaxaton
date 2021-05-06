@@ -1,12 +1,14 @@
 using System.Data;
+using Gupy.Api.Concrete;
+using Gupy.Api.Concrete.Repositories;
+using Gupy.Api.Interfaces;
 using Gupy.Api.Interfaces.Repositories;
-using Gupy.Api.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MySql.Data.MySqlClient;
 
 namespace Gupy.Api
 {
@@ -15,7 +17,7 @@ namespace Gupy.Api
         private IConfiguration Configuration { get; }
         private IWebHostEnvironment Environment { get; }
 
-        protected Startup(IWebHostEnvironment environment)
+        public Startup(IWebHostEnvironment environment)
         {
             Environment = environment;
             var builder = new ConfigurationBuilder()
@@ -25,9 +27,11 @@ namespace Gupy.Api
 
             Configuration = builder.Build();
         }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IDbConnection>(_ => new MySqlConnection(Configuration["Data:ConnectionString"]));
+            services.AddControllers();
+            services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
             services.AddSingleton<IEventRepository, EventRepository>();
         }
 
@@ -38,12 +42,10 @@ namespace Gupy.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHsts();
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
