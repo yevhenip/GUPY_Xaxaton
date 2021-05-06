@@ -33,6 +33,7 @@ namespace Gupy.Api
             services.AddControllers();
             services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
             services.AddSingleton<IEventRepository, EventRepository>();
+            services.AddSingleton<IUserRepository, UserRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

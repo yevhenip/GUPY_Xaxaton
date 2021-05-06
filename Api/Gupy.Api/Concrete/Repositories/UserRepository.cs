@@ -25,7 +25,13 @@ namespace Gupy.Api.Concrete.Repositories
         public Task<User> GetAsync(int id)
         {
             using var connection = _dbConnection.CreateConnection();
-            return connection.QuerySingleOrDefaultAsync<User>("select * from users where Id = @Id", new {Id = id});
+            return connection.QuerySingleOrDefaultAsync<User>("select * from users where TelegramId = @Id", new {Id = id});
+        }
+
+        public async Task<bool> IsExists(int id)
+        {
+            var user = await GetAsync(id);
+            return user is not null;
         }
 
         public Task CreateAsync(User user)
