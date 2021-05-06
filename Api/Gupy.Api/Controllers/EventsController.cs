@@ -23,6 +23,13 @@ namespace Gupy.Api.Controllers
             return Ok(result);
         }
         
+        [HttpGet("page/{page:int}")]
+        public async Task<IActionResult> GetPageAsync(int page)
+        {
+            var result = await _eventRepository.GetPageAsync(page);
+            return Ok(result);
+        }
+        
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAsync(int id)
         {
@@ -34,6 +41,23 @@ namespace Gupy.Api.Controllers
         public async Task<IActionResult> GetAsync(Event @event)
         {
             await _eventRepository.CreateAsync(@event);
+            return Ok();
+        }
+
+        [HttpDelete("{id:int}")]
+        async Task<IActionResult> DeleteAsync(int id)
+        {
+            if (id < 0 )
+            {
+                return BadRequest("Id for model cannot be negative!");
+            }
+            
+            if (_eventRepository.GetAsync(id) == null)
+            {
+                return BadRequest("There is model with such an id!");
+            }
+            
+            await _eventRepository.DeleteAsync(id);
             return Ok();
         }
     }
