@@ -32,11 +32,10 @@ namespace Gupy.Api.Concrete.Repositories
         {
             using var connection = _dbConnection.CreateConnection();
             connection.ExecuteAsync(
-                "insert into events(Name, Description, SubscribedCount, MinWantedPeople, Category, Type) values(@Name, @Description, @SubscribedCount, @MinWantedPeople, @Category, @Type)",
+                "insert into events(Name, Description, SubscribedCount, MinWantedPeople, Type) values(@Name, @Description, @SubscribedCount, @MinWantedPeople, @Category, @Type)",
                 new
                 {
-                    @event.Name, @event.Description, @event.SubscribedCount, @event.MinWantedPeople, @event.Category,
-                    @event.Type
+                    @event.Name, @event.Description, @event.SubscribedCount, @event.MinWantedPeople, @event.Type
                 });
             return Task.CompletedTask;
         }
