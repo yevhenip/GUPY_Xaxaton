@@ -20,5 +20,3 @@ create table gupy_events.users
     UserName varchar(255) null,
     Phone    varchar(100) null
 );
-
-
