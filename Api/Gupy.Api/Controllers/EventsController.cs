@@ -36,5 +36,22 @@ namespace Gupy.Api.Controllers
             await _eventRepository.CreateAsync(@event);
             return Ok();
         }
+
+        [HttpDelete]
+        async Task<IActionResult> DeleteAsync(int id)
+        {
+            if (id < 0 )
+            {
+                return BadRequest("Id for model cannot be negative!");
+            }
+            
+            if (_eventRepository.GetAsync(id) == null)
+            {
+                return BadRequest("There is model with such an id!");
+            }
+            
+            await _eventRepository.DeleteAsync(id);
+            return Ok();
+        }
     }
 }

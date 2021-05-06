@@ -42,7 +42,11 @@ namespace Gupy.Api.Concrete.Repositories
 
         public Task DeleteAsync(int id)
         {
-            throw new System.NotImplementedException();
+            using var connection = _dbConnection.CreateConnection();
+            connection.ExecuteAsync(
+                "delete from events where Id = id");
+               
+            return Task.CompletedTask;
         }
     }
 }
