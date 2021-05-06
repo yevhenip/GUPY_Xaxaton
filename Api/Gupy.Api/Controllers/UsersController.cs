@@ -21,7 +21,7 @@ namespace Gupy.Api.Controllers
             var result = await _userRepository.GetAllAsync();
             return Ok(result);
         }
-        
+
         [HttpPost("{id:int}")]
         public async Task<IActionResult> IsExistsAsync(int id)
         {
@@ -37,7 +37,7 @@ namespace Gupy.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAsync(User user)
+        public async Task<IActionResult> CreateUserAsync(User user)
         {
             await _userRepository.CreateAsync(user);
             return Ok();
@@ -46,16 +46,16 @@ namespace Gupy.Api.Controllers
         [HttpDelete("{telegramId:int}")]
         public async Task<IActionResult> DeleteAsync(int telegramId)
         {
-            if (telegramId < 0 )
+            if (telegramId < 0)
             {
                 return BadRequest("Id for model cannot be negative!");
             }
-            
+
             if (_userRepository.GetAsync(telegramId) == null)
             {
                 return BadRequest("There is model with such an id!");
             }
-            
+
             await _userRepository.DeleteAsync(telegramId);
             return Ok();
         }

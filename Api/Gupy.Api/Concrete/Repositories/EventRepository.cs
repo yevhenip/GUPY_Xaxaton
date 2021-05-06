@@ -96,15 +96,31 @@ namespace Gupy.Api.Concrete.Repositories
 
             return result;
         }
-        
-        
-        public async Task UpdateSubscribersCountAsync(int id)
+
+
+        public async Task<bool> UpdateSubscribersCountAsync(int eventId, int userId)
         {
             using var connection = _dbConnection.CreateConnection();
+            var id =
+                await connection.QuerySingleOrDefaultAsync<int?>(
+                    "select u.Id from events e join userEvents ue on e.Id = ue.EventId join users u on ue.UserId = u.Id where e.Id = @EventId and u.Id = @UserId",
+                    new {EventId = eventId, UserId = userId});
+            if (id is not null) return false;
             var count =
-                await connection.QuerySingleOrDefaultAsync<int>("select SubscribedCount from events where Id = @Id", new {Id = id});
+                await connection.QuerySingleOrDefaultAsync<int>("select SubscribedCount from events where Id = @Id",
+                    new {Id = eventId});
             await connection.ExecuteAsync(
-                "update events set SubscribedCount = @Count where Id = @Id", new {Count = count + 1, Id = id});
+                "update events set SubscribedCount = @Count where Id = @Id", new {Count = count + 1, Id = eventId});
+            await connection.ExecuteAsync(
+                "insert into userEvents(EventId, UserId) values(@EventId, @UserId)",
+                new {EventId = eventId, UserId = userId});
+            return true;
+        }
+
+        public  Task<List<Event>> GetMyAsync()
+        {
+            using var connection = _dbConnection.CreateConnection();
+            var events = connection.QueryAsync<Event>()
         }
     }
 }
