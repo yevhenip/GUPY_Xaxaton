@@ -54,5 +54,15 @@ namespace Gupy.Api.Concrete.Repositories
             using var connection = _dbConnection.CreateConnection();
             return connection.QueryAsync<Event>("select * from events limit 3 offset @Page", new {Page = (page - 1) * 3});
         }
+        
+        
+        public Task UpdateSubscribersCountAsync(int id, int newCount)
+        {
+            using var connection = _dbConnection.CreateConnection();
+            connection.ExecuteAsync(
+                "update events set SubscribedCount = @NewCount where Id = @Id", new {newCount, id});
+               
+            return Task.CompletedTask;
+        }
     }
 }
