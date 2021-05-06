@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -87,7 +88,7 @@ namespace Gupy.Api.Concrete.Repositories
                     Name = @event.Name,
                     Duration = @event.Duration,
                     Type = @event.Type,
-                    EventTime = @event.EventTime.ToString("f"),
+                    EventTime = @event.EventTime.ToString("f", new CultureInfo("uk-UA")),
                     SubscribedCount = @event.SubscribedCount,
                     MinWantedPeople = @event.MinWantedPeople
                 })
