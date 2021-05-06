@@ -8,7 +8,8 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from config import BOT_TOKEN
 from container import DiContainer
-from modules.greet import register_greet_module
+from modules.common import register_common_module
+from modules.event_list import register_event_list_module
 
 
 async def main():
@@ -21,7 +22,8 @@ async def main():
     storage = MemoryStorage()
     dispatcher = Dispatcher(bot, storage=storage)
 
-    register_greet_module(dispatcher)
+    register_common_module(dispatcher)
+    register_event_list_module(dispatcher)
 
     try:
         await dispatcher.start_polling()

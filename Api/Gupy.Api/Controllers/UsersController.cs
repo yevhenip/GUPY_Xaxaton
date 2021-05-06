@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Gupy.Api.Entities;
+using Gupy.Api.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Warehouse.Api.Base;
 
@@ -8,7 +10,7 @@ namespace Gupy.Api.Controllers
     {
         private readonly IUserRepository _userRepository;
 
-        public EventsController(IUserRepository userRepository)
+        public UsersController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
@@ -16,24 +18,22 @@ namespace Gupy.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var result = await _eventRepository.GetAllAsync();
+            var result = await _userRepository.GetAllAsync();
             return Ok(result);
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAsync(int id)
         {
-            var result = await _eventRepository.GetAsync(id);
+            var result = await _userRepository.GetAsync(id);
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAsync(Event @event)
+        public async Task<IActionResult> GetAsync(User user)
         {
-            await _eventRepository.CreateAsync(@event);
+            await _userRepository.CreateAsync(user);
             return Ok();
         }
     }
-}
-
 }

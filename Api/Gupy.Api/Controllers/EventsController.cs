@@ -23,6 +23,13 @@ namespace Gupy.Api.Controllers
             return Ok(result);
         }
         
+        [HttpGet("page/{page:int}")]
+        public async Task<IActionResult> GetPageAsync(int page)
+        {
+            var result = await _eventRepository.GetPageAsync(page);
+            return Ok(result);
+        }
+        
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAsync(int id)
         {
